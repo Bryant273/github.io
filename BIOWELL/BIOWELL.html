@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Biowell – Institut de Recherche en Sciences Alimentaires</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #5eead4;
+  --accent: #f59e0b;
+  --accent-light: #fcd34d;
+  --dark: #0c1222;
+  --dark-card: #131c31;
+  --glass: rgba(255,255,255,0.08);
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --gradient-1: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%);
+  --gradient-2: linear-gradient(135deg, #0c1222 0%, #1e293b 100%);
+  --gradient-hero: radial-gradient(ellipse at 30% 20%, rgba(13,148,136,0.25) 0%, transparent 50%),
+                   radial-gradient(ellipse at 70% 80%, rgba(245,158,11,0.15) 0%, transparent 50%),
+                   linear-gradient(180deg, #0c1222 0%, #1a2744 100%);
+
+  /* Polices adaptatives - Mode sombre */
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'Montserrat', sans-serif;
+}
+
+.light-mode {
+  --dark: #f8fafc;
+  --dark-card: #ffffff;
+  --glass: rgba(0,0,0,0.05);
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --gradient-hero: radial-gradient(ellipse at 30% 20%, rgba(13,148,136,0.15) 0%, transparent 50%),
+                   radial-gradient(ellipse at 70% 80%, rgba(245,158,11,0.1) 0%, transparent 50%),
+                   linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%);
+  --gradient-2: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+
+  /* Polices adaptatives - Mode clair */
+  --font-heading: 'Libre Baskerville', serif;
+  --font-body: 'Work Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--dark);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6, .section-title, .hero h1 {
+  font-family: var(--font-heading);
+}
+
+/* ============ CURSOR GLOW ============ */
+.cursor-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+
+/* ============ LOADER ============ */
+.loader-wrapper {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+.loader-wrapper.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-logo {
+  width: 150px;
+  height: auto;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 10px 30px rgba(13,148,136,0.5));
+}
+.loader-bar {
+  width: 200px;
+  height: 4px;
+  background: var(--glass);
+  border-radius: 10px;
+  margin-top: 30px;
+  overflow: hidden;
+}
+.loader-progress {
+  height: 100%;
+  background: var(--gradient-1);
+  border-radius: 10px;
+  animation: load 2s ease-out forwards;
+}
+@keyframes load { 0% { width: 0; } 100% { width: 100%; } }
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(13,148,136,0.5)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 40px rgba(13,148,136,0.8)); transform: scale(1.05); }
+}
+
+/* ============ BOT ASSISTANT ============ */
+.bot-assistant {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+}
+.bot-bubble {
+  width: 70px;
+  height: 70px;
+  background: var(--gradient-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 40px rgba(13,148,136,0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: float 3s ease-in-out infinite;
+}
+.bot-bubble:hover { transform: scale(1.1); box-shadow: 0 15px 50px rgba(13,148,136,0.6); }
+.bot-face {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+.bot-eye {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  top: 15px;
+  animation: blink 3s infinite;
+}
+.bot-eye.left { left: 10px; }
+.bot-eye.right { right: 10px; }
+.bot-eye::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--dark);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  animation: look-around 5s infinite;
+}
+.bot-mouth {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 8px;
+  border: 3px solid white;
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+}
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes look-around {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(3px, 0); }
+  50% { transform: translate(0, 2px); }
+  75% { transform: translate(-3px, 0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.bot-tooltip {
+  position: absolute;
+  bottom: 90px;
+  right: 0;
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 20px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.9);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.bot-tooltip.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.bot-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 30px;
+  border: 10px solid transparent;
+  border-top-color: var(--dark-card);
+}
+.bot-tooltip h4 {
+  font-size: 1rem;
+  color: var(--primary-light);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bot-tooltip p { font-size: 0.9rem; color: var(--text-muted); }
+.bot-nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+.bot-nav-btn {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: var(--font-body);
+}
+.bot-nav-btn:hover { background: var(--primary); transform: scale(1.05); }
+
+/* ============ NAVBAR ============ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 20px 0;
+  transition: all 0.4s;
+}
+nav.scrolled {
+  background: rgba(12,18,34,0.95);
+  backdrop-filter: blur(20px);
+  padding: 15px 0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+.light-mode nav.scrolled { background: rgba(255,255,255,0.95); }
+.navbar {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.nav-logo-img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+  position: relative;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-1);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-actions { display: flex; align-items: center; gap: 20px; }
+.theme-toggle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+.theme-toggle:hover { background: var(--primary); transform: rotate(180deg); }
+.nav-cta {
+  background: var(--gradient-1);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  box-shadow: 0 5px 20px rgba(13,148,136,0.3);
+}
+.nav-cta:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(13,148,136,0.5); }
+
+.mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+.mobile-toggle span {
+  width: 25px;
+  height: 2px;
+  background: var(--text);
+  transition: all 0.3s;
+}
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-hero);
+  position: relative;
+  overflow: hidden;
+  padding: 120px 40px 80px;
+}
+.hero-bg-elements {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orb-float 20s ease-in-out infinite;
+}
+.hero-orb-1 {
+  width: 600px;
+  height: 600px;
+  background: rgba(13,148,136,0.2);
+  top: -200px;
+  left: -100px;
+}
+.hero-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(245,158,11,0.15);
+  bottom: -100px;
+  right: -50px;
+  animation-delay: -10s;
+}
+.hero-orb-3 {
+  width: 300px;
+  height: 300px;
+  background: rgba(94,234,212,0.1);
+  top: 50%;
+  left: 60%;
+  animation-delay: -5s;
+}
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+}
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--primary-light);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: particle-rise 10s linear infinite;
+}
+@keyframes particle-rise {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+
+.hero-content {
+  max-width: 900px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+.hero-logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 30px;
+  animation: fade-in-up 1s ease 0s both;
+  filter: drop-shadow(0 10px 30px rgba(13,148,136,0.3));
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  color: var(--primary-light);
+  margin-bottom: 30px;
+  animation: fade-in-up 1s ease 0.2s both;
+}
+.hero-badge i { animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 25px;
+  animation: fade-in-up 1s ease 0.4s both;
+}
+.hero h1 .highlight {
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-description {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto 40px;
+  animation: fade-in-up 1s ease 0.6s both;
+}
+.hero-cta {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fade-in-up 1s ease 0.8s both;
+}
+.btn {
+  padding: 18px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-body);
+}
+.btn-primary {
+  background: var(--gradient-1);
+  color: white;
+  box-shadow: 0 10px 40px rgba(13,148,136,0.4);
+}
+.btn-primary:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 50px rgba(13,148,136,0.5); }
+.btn-secondary {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.15); transform: translateY(-5px); }
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 80px;
+  animation: fade-in-up 1s ease 1s both;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ SECTIONS ============ */
+section { padding: 120px 40px; max-width: 1400px; margin: auto; }
+
+.section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 80px;
+}
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13,148,136,0.1);
+  color: var(--primary-light);
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.section-desc { color: var(--text-muted); font-size: 1.1rem; }
+
+/* ============ ABOUT ============ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.about-image {
+  position: relative;
+}
+.about-image-main {
+  width: 100%;
+  height: 500px;
+  background: var(--gradient-1);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+  position: relative;
+  overflow: hidden;
+}
+.about-image-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M47.5,-57.2C59.9,-46.8,67.5,-30.5,71.1,-12.8C74.7,4.9,74.4,24,65.8,38.4C57.2,52.8,40.4,62.5,22.4,68.5C4.4,74.5,-14.7,76.8,-32.2,71.1C-49.7,65.4,-65.5,51.7,-73.3,34.3C-81.1,16.9,-80.8,-4.2,-74.1,-22.5C-67.4,-40.8,-54.3,-56.3,-39,-66.1C-23.7,-75.9,-6.2,-80,9.1,-76.3C24.4,-72.6,35.1,-67.6,47.5,-57.2Z' transform='translate(100 100)'/%3E%3C/svg%3E") center/cover;
+  opacity: 0.3;
+}
+.about-floating-card {
+  position: absolute;
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.about-floating-card.card-1 {
+  top: -30px;
+  right: -40px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.about-floating-card.card-2 {
+  bottom: 50px;
+  left: -50px;
+}
+.about-card-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--gradient-1);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+.about-card-text h4 { font-size: 1.5rem; font-weight: 700; }
+.about-card-text p { font-size: 0.85rem; color: var(--text-muted); }
+
+.about-content h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+.about-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 20px; }
+.about-features { margin-top: 40px; display: grid; gap: 20px; }
+.about-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+.about-feature-icon {
+  width: 45px;
+  height: 45px;
+  background: rgba(13,148,136,0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-light);
+  flex-shrink: 0;
+}
+.about-feature h4 { font-weight: 600; margin-bottom: 5px; }
+.about-feature p { font-size: 0.9rem; color: var(--text-muted); }
+
+/* ============ SERVICES ============ */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+.service-card {
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 30px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--gradient-1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s;
+}
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { transform: translateY(-10px); box-shadow: 0 30px 80px rgba(0,0,0,0.3); }
+
+.service-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(13,148,136,0.1);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--primary-light);
+  margin-bottom: 25px;
+  transition: all 0.5s;
+}
+.service-card:hover .service-icon {
+  background: var(--gradient-1);
+  color: white;
+  transform: scale(1.1) rotate(5deg);
+}
+.service-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
+.service-card p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.7; }
+.service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-light);
+  font-weight: 600;
+  text-decoration: none;
+  transition: gap 0.3s;
+}
+.service-link:hover { gap: 15px; }
+
+/* ============ LABS - AVEC IMAGES ============ */
+.labs-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.lab-card {
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 25px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  transition: all 0.5s;
+  min-height: 280px;
+}
+
+.lab-card:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.lab-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+}
+
+.lab-image {
+  flex: 0 0 45%;
+  background: var(--gradient-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.lab-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  transition: transform 0.5s;
+}
+
+.lab-card:hover .lab-image img {
+  transform: scale(1.05);
+}
+
+.lab-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13,148,136,0.2) 0%, rgba(13,148,136,0.4) 100%);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.lab-card:hover .lab-image::before {
+  opacity: 1;
+}
+
+.lab-icon {
+  width: 100px;
+  height: 100px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  z-index: 2;
+  position: relative;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s;
+}
+
+.lab-card:hover .lab-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lab-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lab-content h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.lab-content p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.lab-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.lab-feature-tag {
+  background: rgba(13,148,136,0.1);
+  color: var(--primary-light);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Card formation - pleine largeur */
+.lab-card.full-width {
+  flex-direction: column !important;
+}
+
+.lab-card.full-width .lab-image {
+  flex: 0 0 350px;
+  min-height: 350px;
+}
+
+.lab-card.full-width .lab-content {
+  text-align: center;
+  padding: 50px;
+}
+
+.lab-card.full-width .lab-features {
+  justify-content: center;
+}
+
+/* ============ PROCESS ============ */
+.process-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  position: relative;
+}
+.process-timeline::before {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 3px;
+  background: var(--glass);
+}
+.process-step {
+  text-align: center;
+  position: relative;
+}
+.process-number {
+  width: 100px;
+  height: 100px;
+  background: var(--dark-card);
+  border: 3px solid var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-light);
+  margin: 0 auto 30px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s;
+}
+.process-step:hover .process-number {
+  background: var(--gradient-1);
+  color: white;
+  transform: scale(1.1);
+  border-color: transparent;
+}
+.process-step h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+.process-step p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* ============ TEAM ============ */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+.team-card {
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 25px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.5s;
+}
+.team-card:hover { transform: translateY(-10px); box-shadow: 0 30px 80px rgba(0,0,0,0.3); }
+.team-avatar {
+  width: 120px;
+  height: 120px;
+  background: var(--gradient-1);
+  border-radius: 50%;
+  margin: 0 auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+}
+.team-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.4s;
+}
+.team-card:hover .team-avatar::after { opacity: 1; inset: -10px; }
+.team-card h4 { font-size: 1.3rem; font-weight: 700; margin-bottom: 5px; }
+.team-role { color: var(--primary-light); font-size: 0.9rem; margin-bottom: 15px; line-height: 1.6; }
+.team-bio { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+.team-social { display: flex; justify-content: center; gap: 12px; }
+.team-social a {
+  width: 40px;
+  height: 40px;
+  background: var(--glass);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.team-social a:hover { background: var(--gradient-1); transform: translateY(-3px); }
+
+/* ============ TESTIMONIALS ============ */
+.testimonials-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.testimonials-track {
+  display: flex;
+  gap: 30px;
+  animation: scroll-testimonials 30s linear infinite;
+}
+@keyframes scroll-testimonials {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.testimonial-card {
+  flex-shrink: 0;
+  width: 400px;
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 25px;
+  padding: 35px;
+}
+.testimonial-stars { color: var(--accent); font-size: 1.1rem; margin-bottom: 20px; }
+.testimonial-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 25px;
+  color: var(--text);
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.testimonial-avatar {
+  width: 50px;
+  height: 50px;
+  background: var(--gradient-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.testimonial-info h5 { font-weight: 600; }
+.testimonial-info span { font-size: 0.85rem; color: var(--text-muted); }
+
+/* ============ CTA SECTION ============ */
+.cta-section {
+  background: var(--gradient-1);
+  border-radius: 40px;
+  padding: 80px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.cta-section > * { position: relative; z-index: 2; }
+.cta-section h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: white;
+}
+.cta-section p {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-section .btn-secondary {
+  background: white;
+  color: var(--primary-dark);
+  border: none;
+}
+.cta-section .btn-secondary:hover { background: rgba(255,255,255,0.9); }
+
+/* ============ CONTACT ============ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+}
+.contact-info h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; }
+.contact-info > p { color: var(--text-muted); margin-bottom: 40px; }
+.contact-methods { display: grid; gap: 25px; }
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.contact-method-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(13,148,136,0.1);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--primary-light);
+}
+.contact-method h4 { font-weight: 600; margin-bottom: 5px; }
+.contact-method p { color: var(--text-muted); font-size: 0.95rem; }
+
+.contact-form {
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 30px;
+  padding: 50px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-group { margin-bottom: 25px; }
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 18px 25px;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 15px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  transition: all 0.3s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(13,148,136,0.1);
+}
+.form-group textarea { min-height: 150px; resize: vertical; }
+.form-group select { cursor: pointer; }
+.form-group select option { background: var(--dark-card); }
+.form-submit { width: 100%; }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--dark-card);
+  border-top: 1px solid var(--glass);
+  padding: 80px 40px 30px;
+  margin-top: 100px;
+}
+.footer-content {
+  max-width: 1400px;
+  margin: auto;
+}
+.footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  gap: 50px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid var(--glass);
+}
+.footer-logo-img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 15px rgba(13,148,136,0.3));
+}
+.footer-brand p { color: var(--text-muted); margin: 20px 0; max-width: 300px; font-size: 0.95rem; }
+.footer-social { display: flex; gap: 12px; }
+.footer-social a {
+  width: 45px;
+  height: 45px;
+  background: var(--glass);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+.footer-social a:hover { background: var(--gradient-1); transform: translateY(-3px); }
+.footer-social a.whatsapp:hover { background: #25D366; }
+.footer-social a.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.footer-social a.facebook:hover { background: #1877F2; }
+.footer-social a.tiktok:hover { background: #000000; }
+.footer-social a.linkedin:hover { background: #0A66C2; }
+
+.footer-links h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--text);
+}
+.footer-links ul { list-style: none; display: grid; gap: 15px; }
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--primary-light); }
+
+.footer-newsletter p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+.newsletter-form {
+  display: flex;
+  gap: 10px;
+}
+.newsletter-form input {
+  flex: 1;
+  padding: 15px 20px;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 16px;
+}
+.newsletter-form button {
+  padding: 15px 25px;
+  background: var(--gradient-1);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.newsletter-form button:hover { transform: scale(1.05); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.footer-bottom-links { display: flex; gap: 30px; }
+.footer-bottom-links a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+.footer-bottom-links a:hover { color: var(--primary-light); }
+
+/* ============ SCROLL ANIMATIONS ============ */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.reveal.active { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============ MOBILE NAV ============ */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s;
+}
+.mobile-nav.active { opacity: 1; visibility: visible; }
+.mobile-nav a {
+  font-size: 1.5rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+.mobile-close {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-content {
+  background: var(--dark-card);
+  border: 1px solid var(--glass);
+  border-radius: 25px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+}
+.modal-overlay.active .modal-content { transform: scale(1); }
+.modal-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 25px;
+}
+.modal-content h3 { font-size: 1.5rem; margin-bottom: 15px; }
+.modal-content p { color: var(--text-muted); margin-bottom: 30px; }
+.modal-close {
+  background: var(--glass);
+  border: none;
+  color: var(--text);
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: var(--font-body);
+}
+.modal-close:hover { background: var(--primary); }
+
+/* ============ NOTIFICATION ============ */
+.notification {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  background: var(--dark-card);
+  border: 1px solid var(--primary);
+  border-radius: 15px;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.notification.show { transform: translateX(0); }
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1200px) {
+  .footer-main { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .about-grid { grid-template-columns: 1fr; gap: 50px; }
+  .about-image { order: -1; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .process-timeline { grid-template-columns: repeat(2, 1fr); }
+  .process-timeline::before { display: none; }
+
+  .lab-card {
+    flex-direction: column !important;
+  }
+  .lab-image {
+    flex: 0 0 220px;
+    min-height: 220px;
+  }
+  .lab-card.full-width .lab-image {
+    flex: 0 0 280px;
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  section { padding: 80px 20px; }
+  .nav-links, .nav-actions .nav-cta { display: none; }
+  .mobile-toggle { display: flex; }
+  .mobile-nav { display: flex; }
+  .hero { padding: 120px 20px 60px; }
+  .hero-stats { flex-direction: column; gap: 30px; }
+  .process-timeline { grid-template-columns: 1fr; gap: 40px; }
+  .footer-main { grid-template-columns: 1fr; text-align: center; }
+  .footer-social { justify-content: center; }
+  .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+  .form-row { grid-template-columns: 1fr; }
+  .bot-tooltip { width: 280px; right: -10px; }
+  .cursor-glow { display: none; }
+
+  .lab-content {
+    padding: 25px;
+  }
+  .lab-content h3 {
+    font-size: 1.3rem;
+  }
+  .hero-logo {
+    width: 140px;
+  }
+  .nav-logo-img {
+    height: 45px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Loader avec logo BIOWELL -->
+<div class="loader-wrapper" id="loader">
+  <img src="mnt/BIOWELL.png" alt="Biowell" class="loader-logo">
+  <div class="loader-bar">
+    <div class="loader-progress"></div>
+  </div>
+</div>
+
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Bot Assistant -->
+<div class="bot-assistant">
+  <div class="bot-tooltip" id="botTooltip">
+    <h4><i class="fas fa-robot"></i> BioBot - Assistant</h4>
+    <p id="botMessage">Bienvenue sur Biowell ! Je suis là pour vous guider. Où souhaitez-vous aller ?</p>
+    <div class="bot-nav-buttons">
+      <button class="bot-nav-btn" data-section="hero">Accueil</button>
+      <button class="bot-nav-btn" data-section="about">Institut</button>
+      <button class="bot-nav-btn" data-section="services">Services</button>
+      <button class="bot-nav-btn" data-section="labs">Labos</button>
+      <button class="bot-nav-btn" data-section="team">Équipe</button>
+      <button class="bot-nav-btn" data-section="contact">Contact</button>
+    </div>
+  </div>
+  <div class="bot-bubble" id="botBubble">
+    <div class="bot-face">
+      <div class="bot-eye left"></div>
+      <div class="bot-eye right"></div>
+      <div class="bot-mouth"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+  <div class="notification-icon"><i class="fas fa-check"></i></div>
+  <div>
+    <strong>Message envoyé !</strong>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:0">Nous vous répondrons sous 24h.</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-content">
+    <div class="modal-icon"><i class="fas fa-check"></i></div>
+    <h3>Merci pour votre message !</h3>
+    <p>Notre équipe vous contactera dans les plus brefs délais.</p>
+    <button class="modal-close" onclick="closeModal()">Fermer</button>
+  </div>
+</div>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-close" onclick="closeMobileNav()"><i class="fas fa-times"></i></button>
+  <a href="#hero" onclick="closeMobileNav()">Accueil</a>
+  <a href="#about" onclick="closeMobileNav()">Institut</a>
+  <a href="#services" onclick="closeMobileNav()">Services</a>
+  <a href="#labs" onclick="closeMobileNav()">Laboratoires</a>
+  <a href="#process" onclick="closeMobileNav()">Processus</a>
+  <a href="#team" onclick="closeMobileNav()">Équipe</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- Navigation avec logo BIOWELL -->
+<nav id="navbar">
+  <div class="navbar">
+    <a href="#hero" class="nav-logo">
+      <img src="mnt/BIOWELL.png" alt="Biowell" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">Institut</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#labs">Laboratoires</a></li>
+      <li><a href="#process">Processus</a></li>
+      <li><a href="#team">Équipe</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <a href="#contact" class="nav-cta">Nous contacter</a>
+      <button class="mobile-toggle" onclick="openMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section avec logo BIOWELL -->
+<section class="hero" id="hero">
+  <div class="hero-bg-elements">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-particles" id="particles"></div>
+  </div>
+  <div class="hero-content">
+    <img src="mnt/BIOWELL.png" alt="Biowell" class="hero-logo">
+    <div class="hero-badge">
+      <i class="fas fa-microscope"></i>
+      Institut de Recherche Alimentaire
+    </div>
+    <h1>Nourrir l'invisible,<br><span class="highlight">changer le visible</span></h1>
+    <p class="hero-description">Institut de Recherche en Sciences Alimentaires dédié à la sécurité sanitaire, à l'innovation nutritionnelle et à la transformation durable des systèmes alimentaires.</p>
+    <div class="hero-cta">
+      <a href="#services" class="btn btn-primary">
+        <i class="fas fa-flask"></i> Explorer nos services
+      </a>
+      <a href="#contact" class="btn btn-secondary">
+        <i class="fas fa-envelope"></i> Nous contacter
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number" data-count="15">0</div>
+        <div class="stat-label">Années d'expertise</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="500">0</div>
+        <div class="stat-label">Analyses par an</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="98">0</div>
+        <div class="stat-label">% Satisfaction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-image reveal">
+      <div class="about-image-main">
+        <i class="fas fa-dna"></i>
+      </div>
+      <div class="about-floating-card card-1">
+        <div class="about-card-icon"><i class="fas fa-award"></i></div>
+        <div class="about-card-text">
+          <h4>Certifié ISO</h4>
+          <p>Normes internationales</p>
+        </div>
+      </div>
+      <div class="about-floating-card card-2">
+        <div class="about-card-icon"><i class="fas fa-users"></i></div>
+        <div class="about-card-text">
+          <h4>5 Experts</h4>
+          <p>Équipe qualifiée</p>
+        </div>
+      </div>
+    </div>
+    <div class="about-content reveal reveal-delay-2">
+      <h2>L'excellence au service de la science alimentaire</h2>
+      <p>Depuis notre création, Biowell s'est imposé comme un acteur majeur de la recherche en sciences alimentaires en Côte d'Ivoire. Notre mission : garantir la sécurité et la qualité des aliments tout en favorisant l'innovation durable.</p>
+      <p>Nos laboratoires de pointe et notre équipe pluridisciplinaire nous permettent d'accompagner les acteurs de l'industrie agroalimentaire dans leurs défis quotidiens.</p>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <h4>Analyses certifiées</h4>
+            <p>Résultats conformes aux standards internationaux</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <h4>Innovation continue</h4>
+            <p>R&D pour des solutions alimentaires durables</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="fas fa-check"></i></div>
+          <div>
+            <h4>Accompagnement personnalisé</h4>
+            <p>Conseil expert adapté à vos besoins</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services">
+  <div class="section-header reveal">
+    <span class="section-tag"><i class="fas fa-cog"></i> Nos Expertises</span>
+    <h2 class="section-title">Des services d'excellence pour l'industrie alimentaire</h2>
+    <p class="section-desc">Une gamme complète de prestations pour garantir la qualité et la sécurité de vos produits.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon"><i class="fas fa-microscope"></i></div>
+      <h3>Contrôle Microbiologique</h3>
+      <p>Analyses microbiologiques complètes pour détecter et quantifier les micro-organismes pathogènes et d'altération dans vos produits alimentaires.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon"><i class="fas fa-flask"></i></div>
+      <h3>Analyses Physico-chimiques</h3>
+      <p>Détermination précise de la composition nutritionnelle, des additifs, contaminants et paramètres de qualité de vos produits.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon"><i class="fas fa-seedling"></i></div>
+      <h3>Formulation Alimentaire</h3>
+      <p>Développement de nouveaux produits innovants et optimisation de formulations existantes pour répondre aux tendances du marché.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon"><i class="fas fa-graduation-cap"></i></div>
+      <h3>Formation & Conseil</h3>
+      <p>Programmes de formation sur mesure en HACCP, bonnes pratiques d'hygiène et gestion de la qualité alimentaire.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="service-card reveal reveal-delay-4">
+      <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+      <h3>Audit Qualité</h3>
+      <p>Évaluation complète de vos processus de production et recommandations pour améliorer votre système qualité.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon"><i class="fas fa-recycle"></i></div>
+      <h3>Développement Durable</h3>
+      <p>Accompagnement vers des pratiques plus durables : réduction des déchets, optimisation énergétique, économie circulaire.</p>
+      <a href="#contact" class="service-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Labs Section avec IMAGES -->
+<section id="labs">
+  <div class="section-header reveal">
+    <span class="section-tag"><i class="fas fa-building"></i> Nos Infrastructures</span>
+    <h2 class="section-title">Des espaces conçus pour l'excellence</h2>
+    <p class="section-desc">Nos laboratoires modernes et équipements de pointe garantissent des résultats fiables et précis.</p>
+  </div>
+  <div class="labs-showcase">
+
+    <!-- Laboratoire de Microbiologie -->
+    <div class="lab-card reveal">
+      <div class="lab-image">
+        <img src="mnt/microbiologie.jpg" alt="Laboratoire de Microbiologie">
+        <div class="lab-icon"><i class="fas fa-bacteria"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Laboratoire de Microbiologie</h3>
+        <p>Notre laboratoire de microbiologie est équipé des technologies les plus avancées pour l'analyse microbiologique. Nous réalisons des tests de détection et de quantification des micro-organismes pathogènes, des analyses de stérilité et des contrôles de qualité conformes aux normes internationales.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">Analyse pathogènes</span>
+          <span class="lab-feature-tag">Contrôle qualité</span>
+          <span class="lab-feature-tag">Normes ISO</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Laboratoire de Formulation -->
+    <div class="lab-card reveal reveal-delay-1">
+      <div class="lab-image">
+        <img src="mnt/formulation.jpg" alt="Laboratoire de Formulation">
+        <div class="lab-icon"><i class="fas fa-vial"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Laboratoire de Formulation</h3>
+        <p>Espace dédié à l'innovation et au développement de produits alimentaires. Notre équipe de chercheurs travaille sur la création de nouvelles formulations, l'optimisation des recettes existantes et le développement de produits à haute valeur nutritionnelle.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">R&D alimentaire</span>
+          <span class="lab-feature-tag">Innovation</span>
+          <span class="lab-feature-tag">Nutrition</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Espace d'Accueil -->
+    <div class="lab-card reveal reveal-delay-2">
+      <div class="lab-image">
+        <img src="mnt/accueil.jpg" alt="Espace d'Accueil">
+        <div class="lab-icon"><i class="fas fa-door-open"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Espace d'Accueil</h3>
+        <p>Zone de réception moderne et professionnelle conçue pour accueillir nos clients et partenaires dans les meilleures conditions. Un espace chaleureux qui reflète notre engagement envers l'excellence et le professionnalisme.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">Réception clients</span>
+          <span class="lab-feature-tag">Espace attente</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Salle de Réunion -->
+    <div class="lab-card reveal reveal-delay-3">
+      <div class="lab-image">
+        <img src="mnt/reunion.jpg" alt="Salle de Réunion">
+        <div class="lab-icon"><i class="fas fa-handshake"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Salle de Réunion</h3>
+        <p>Espace de réflexion stratégique et scientifique équipé pour les présentations, les réunions de travail et les sessions de brainstorming. Idéal pour les échanges avec nos clients et les réunions d'équipe.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">Présentations</span>
+          <span class="lab-feature-tag">Visioconférence</span>
+          <span class="lab-feature-tag">Collaboration</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Espace Collaboratif -->
+    <div class="lab-card reveal reveal-delay-4">
+      <div class="lab-image">
+        <img src="mnt/collaboratif.jpg" alt="Espace Collaboratif">
+        <div class="lab-icon"><i class="fas fa-users"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Espace Collaboratif</h3>
+        <p>Un environnement de travail ouvert favorisant l'échange d'idées et la collaboration entre nos experts. Cet espace encourage l'innovation collective et le partage de connaissances au sein de notre équipe pluridisciplinaire.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">Travail d'équipe</span>
+          <span class="lab-feature-tag">Innovation</span>
+          <span class="lab-feature-tag">Open space</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Salle de Formation - Pleine largeur -->
+    <div class="lab-card full-width reveal">
+      <div class="lab-image">
+        <img src="mnt/formation.jpg" alt="Salle de Formation">
+        <div class="lab-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+      </div>
+      <div class="lab-content">
+        <h3>Salle de Formation</h3>
+        <p>Espace dédié aux formations et séminaires, équipé pour accueillir des sessions de formation en HACCP, bonnes pratiques d'hygiène et autres programmes de développement des compétences pour nos clients et partenaires.</p>
+        <div class="lab-features">
+          <span class="lab-feature-tag">Formation HACCP</span>
+          <span class="lab-feature-tag">Séminaires</span>
+          <span class="lab-feature-tag">Certifications</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Process Section -->
+<section id="process">
+  <div class="section-header reveal">
+    <span class="section-tag"><i class="fas fa-route"></i> Notre Processus</span>
+    <h2 class="section-title">Comment nous travaillons</h2>
+    <p class="section-desc">Un processus rigoureux pour des résultats fiables et rapides.</p>
+  </div>
+  <div class="process-timeline">
+    <div class="process-step reveal">
+      <div class="process-number">01</div>
+      <h3>Prise de Contact</h3>
+      <p>Échange pour comprendre vos besoins et définir les analyses nécessaires</p>
+    </div>
+    <div class="process-step reveal reveal-delay-1">
+      <div class="process-number">02</div>
+      <h3>Prélèvement</h3>
+      <p>Collecte des échantillons selon les protocoles normalisés</p>
+    </div>
+    <div class="process-step reveal reveal-delay-2">
+      <div class="process-number">03</div>
+      <h3>Analyse</h3>
+      <p>Réalisation des tests dans nos laboratoires certifiés</p>
+    </div>
+    <div class="process-step reveal reveal-delay-3">
+      <div class="process-number">04</div>
+      <h3>Rapport</h3>
+      <p>Livraison des résultats avec recommandations personnalisées</p>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <span class="section-tag"><i class="fas fa-quote-left"></i> Témoignages</span>
+    <h2 class="section-title">Ce que disent nos clients</h2>
+    <p class="section-desc">La satisfaction de nos partenaires est notre meilleure récompense.</p>
+  </div>
+  <div class="testimonials-wrapper">
+    <div class="testimonials-track">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Biowell a transformé notre approche de la qualité alimentaire. Leur expertise et leur réactivité sont remarquables."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Amadou Koné</h5>
+            <span>Directeur Qualité - AgroFood CI</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Les formations dispensées par Biowell ont considérablement amélioré les compétences de notre équipe."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Marie Ouattara</h5>
+            <span>Responsable RH - Nestlé CI</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Un partenaire de confiance pour toutes nos analyses. Les délais sont toujours respectés."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Jean Bamba</h5>
+            <span>PDG - Ivorian Foods</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Grâce à Biowell, nous avons obtenu notre certification ISO 22000. Un accompagnement exceptionnel !"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Fatou Diallo</h5>
+            <span>Directrice - Tropical Juice</span>
+          </div>
+        </div>
+      </div>
+      <!-- Duplicate for infinite scroll -->
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Biowell a transformé notre approche de la qualité alimentaire. Leur expertise et leur réactivité sont remarquables."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Amadou Koné</h5>
+            <span>Directeur Qualité - AgroFood CI</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"Les formations dispensées par Biowell ont considérablement amélioré les compétences de notre équipe."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar"><i class="fas fa-user"></i></div>
+          <div class="testimonial-info">
+            <h5>Marie Ouattara</h5>
+            <span>Responsable RH - Nestlé CI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section id="team">
+  <div class="section-header reveal">
+    <span class="section-tag"><i class="fas fa-users"></i> Notre Équipe</span>
+    <h2 class="section-title">Des experts passionnés</h2>
+    <p class="section-desc">Une équipe pluridisciplinaire dédiée à l'excellence scientifique.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-avatar"><i class="fas fa-user-tie"></i></div>
+      <h4>Kouton Fatimata</h4>
+      <p class="team-role">Chef d'entreprise, Biostatisticienne, Data Manager</p>
+      <p class="team-bio">Expertise en analyse de données et gestion de projets de recherche. Leadership stratégique de Biowell.</p>
+      <div class="team-social">
+        <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-1">
+      <div class="team-avatar"><i class="fas fa-user-graduate"></i></div>
+      <h4>Kouabenan Rosette</h4>
+      <p class="team-role">Biochimiste, Biologiste</p>
+      <p class="team-bio">Spécialiste en biochimie et biologie moléculaire. Expertise en analyses et contrôle qualité.</p>
+      <div class="team-social">
+        <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-2">
+      <div class="team-avatar"><i class="fas fa-user-md"></i></div>
+      <h4>Koffi Ahissan Marie</h4>
+      <p class="team-role">Médecin, Attaché de Recherche Clinique (ARC)</p>
+      <p class="team-bio">Expertise médicale et supervision des protocoles de recherche clinique.</p>
+      <div class="team-social">
+        <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-3">
+      <div class="team-avatar"><i class="fas fa-apple-alt"></i></div>
+      <h4>Amessan Fabienne</h4>
+      <p class="team-role">Nutritionniste</p>
+      <p class="team-bio">Spécialiste en nutrition et formulation alimentaire. Conseil en alimentation saine et équilibrée.</p>
+      <div class="team-social">
+        <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-4">
+      <div class="team-avatar"><i class="fas fa-laptop-code"></i></div>
+      <h4>Bamba Valanzé</h4>
+      <p class="team-role">Technicien Labo en Recherche Clinique (TRC), Informaticien</p>
+      <p class="team-bio">Double compétence technique et informatique. Gestion des équipements et systèmes d'information.</p>
+      <div class="team-social">
+        <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section>
+  <div class="cta-section reveal">
+    <h2>Prêt à transformer votre qualité alimentaire ?</h2>
+    <p>Contactez-nous dès aujourd'hui pour discuter de vos besoins et découvrir comment Biowell peut vous accompagner.</p>
+    <a href="#contact" class="btn btn-secondary">
+      <i class="fas fa-phone"></i> Demander un devis gratuit
+    </a>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Contactez-nous</h3>
+      <p>Notre équipe est à votre disposition pour répondre à toutes vos questions.</p>
+      <div class="contact-methods">
+        <div class="contact-method">
+          <div class="contact-method-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h4>Adresse</h4>
+            <p>Cocody – 2 Plateaux Vallon, Abidjan</p>
+          </div>
+        </div>
+        <div class="contact-method">
+          <div class="contact-method-icon"><i class="fab fa-whatsapp"></i></div>
+          <div>
+            <h4>WhatsApp</h4>
+            <p><a href="https://wa.me/2250797654208" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted);text-decoration:none;">+225 07 97 65 42 08</a></p>
+          </div>
+        </div>
+        <div class="contact-method">
+          <div class="contact-method-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <h4>Email</h4>
+            <p>contact@biowell.ci</p>
+          </div>
+        </div>
+        <div class="contact-method">
+          <div class="contact-method-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4>Horaires</h4>
+            <p>Lun – Sam : 8h – 21h</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form reveal reveal-delay-2" id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nom complet</label>
+          <input type="text" id="name" placeholder="Votre nom" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="votre@email.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Téléphone</label>
+          <input type="tel" id="phone" placeholder="+225 00 00 00 00 00">
+        </div>
+        <div class="form-group">
+          <label for="service">Service souhaité</label>
+          <select id="service">
+            <option value="">Sélectionnez un service</option>
+            <option value="microbiologie">Contrôle Microbiologique</option>
+            <option value="chimie">Analyses Physico-chimiques</option>
+            <option value="formulation">Formulation Alimentaire</option>
+            <option value="formation">Formation & Conseil</option>
+            <option value="audit">Audit Qualité</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="Décrivez votre projet ou vos besoins..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary form-submit">
+        <i class="fas fa-paper-plane"></i> Envoyer le message
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer avec logo BIOWELL -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo">
+          <img src="mnt/BIOWELL.png" alt="Biowell" class="footer-logo-img">
+        </a>
+        <p>Institut de Recherche en Sciences Alimentaires dédié à l'excellence scientifique et à l'innovation durable.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/2250797654208" target="_blank" rel="noopener noreferrer" class="whatsapp" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://www.instagram.com/biowellpro?igsh=MXY0aWNjcmhkMDhjdA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/profile.php?id=61586977077851" target="_blank" rel="noopener noreferrer" class="facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.tiktok.com/@bioweocyioz?_r=1&_t=ZS-93EduQTnkSC" target="_blank" rel="noopener noreferrer" class="tiktok" title="TikTok"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.linkedin.com/in/entreprise-virtuelle-biowell-6288a03a7?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" class="linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#about">À propos</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#labs">Laboratoires</a></li>
+          <li><a href="#team">Équipe</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Microbiologie</a></li>
+          <li><a href="#services">Analyses</a></li>
+          <li><a href="#services">Formation</a></li>
+          <li><a href="#services">Conseil</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-newsletter">
+        <h4>Newsletter</h4>
+        <p>Restez informé de nos actualités et innovations.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <input type="email" placeholder="Votre email" required>
+          <button type="submit"><i class="fas fa-arrow-right"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Biowell – Institut de Recherche en Sciences Alimentaires. Tous droits réservés.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ LOADER ============
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('loader').classList.add('hidden');
+    initAnimations();
+  }, 2200);
+});
+
+// ============ THEME TOGGLE ============
+var themeToggle = document.getElementById('themeToggle');
+var themeIcon = themeToggle.querySelector('i');
+
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+  document.documentElement.classList.add('light-mode');
+  themeIcon.classList.replace('fa-moon', 'fa-sun');
+}
+
+themeToggle.addEventListener('click', function() {
+  document.documentElement.classList.toggle('light-mode');
+  if (document.documentElement.classList.contains('light-mode')) {
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+  } else {
+    themeIcon.classList.replace('fa-sun', 'fa-moon');
+  }
+});
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(event) {
+  if (event.matches) {
+    document.documentElement.classList.remove('light-mode');
+    themeIcon.classList.replace('fa-sun', 'fa-moon');
+  } else {
+    document.documentElement.classList.add('light-mode');
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+  }
+});
+
+// ============ NAVBAR SCROLL ============
+window.addEventListener('scroll', function() {
+  var navbar = document.getElementById('navbar');
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+// ============ MOBILE NAV ============
+function openMobileNav() {
+  document.getElementById('mobileNav').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ============ CURSOR GLOW ============
+var cursorGlow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', function(e) {
+  cursorGlow.style.left = e.clientX + 'px';
+  cursorGlow.style.top = e.clientY + 'px';
+});
+
+// ============ PARTICLES ============
+function createParticles() {
+  var container = document.getElementById('particles');
+  for (var i = 0; i < 30; i++) {
+    var particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 10 + 's';
+    particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+    container.appendChild(particle);
+  }
+}
+createParticles();
+
+// ============ BOT ASSISTANT ============
+var botBubble = document.getElementById('botBubble');
+var botTooltip = document.getElementById('botTooltip');
+var botMessage = document.getElementById('botMessage');
+var botOpen = false;
+
+var botMessages = {
+  hero: "Vous êtes sur l'accueil ! Découvrez notre institut de recherche alimentaire. 🌱",
+  about: "Voici notre section Institut ! Apprenez-en plus sur notre histoire et nos valeurs. 🏛️",
+  services: "Nos services sont conçus pour garantir l'excellence de vos produits alimentaires. 🔬",
+  labs: "Découvrez nos laboratoires de pointe équipés des dernières technologies ! 🧪",
+  process: "Voici notre processus de travail en 4 étapes simples et efficaces. ✨",
+  team: "Rencontrez notre équipe d'experts passionnés ! 👥",
+  contact: "Vous avez des questions ? Contactez-nous ! 📧"
+};
+
+botBubble.addEventListener('click', function() {
+  botOpen = !botOpen;
+  botTooltip.classList.toggle('active', botOpen);
+});
+
+document.querySelectorAll('.bot-nav-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var section = btn.dataset.section;
+    document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
+    botMessage.textContent = botMessages[section] || "Je vous accompagne dans votre navigation ! 🤖";
+    setTimeout(function() {
+      botTooltip.classList.remove('active');
+      botOpen = false;
+    }, 500);
+  });
+});
+
+// Show bot tip after 3 seconds
+setTimeout(function() {
+  if (!botOpen) {
+    botTooltip.classList.add('active');
+    botOpen = true;
+    setTimeout(function() {
+      if (botOpen) {
+        botTooltip.classList.remove('active');
+        botOpen = false;
+      }
+    }, 5000);
+  }
+}, 3000);
+
+// ============ SCROLL ANIMATIONS ============
+function initAnimations() {
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+}
+
+// ============ COUNTER ANIMATION ============
+function animateCounters() {
+  var counters = document.querySelectorAll('.stat-number');
+  counters.forEach(function(counter) {
+    var target = parseInt(counter.dataset.count);
+    var duration = 2000;
+    var step = target / (duration / 16);
+    var current = 0;
+
+    function update() {
+      current += step;
+      if (current < target) {
+        counter.textContent = Math.floor(current);
+        requestAnimationFrame(update);
+      } else {
+        counter.textContent = target;
+        if (target === 98) counter.textContent = target + '%';
+        if (target === 500) counter.textContent = target + '+';
+        if (target === 15) counter.textContent = target + '+';
+      }
+    }
+    update();
+  });
+}
+
+var statsObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      animateCounters();
+      statsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+var heroStats = document.querySelector('.hero-stats');
+if (heroStats) statsObserver.observe(heroStats);
+
+// ============ CONTACT FORM ============
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  document.getElementById('modal').classList.add('active');
+  e.target.reset();
+});
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+// ============ NEWSLETTER ============
+function handleNewsletter(e) {
+  e.preventDefault();
+  var notification = document.getElementById('notification');
+  notification.querySelector('strong').textContent = 'Inscription réussie !';
+  notification.querySelector('p').textContent = 'Bienvenue dans notre newsletter.';
+  notification.classList.add('show');
+  e.target.reset();
+  setTimeout(function() {
+    notification.classList.remove('show');
+  }, 4000);
+}
+
+// Close modal on outside click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === document.getElementById('modal')) {
+    closeModal();
+  }
+});
+</script>
+
+</body>
+</html>
+
